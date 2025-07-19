@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+  
+  .crash-display {
+    font-size: 40px;
+    margin: 20px 0;
+  }
+  
+  .x-display {
+    font-size: 20px;
+    margin: 10px 0;
+  }
+  
+  .input-group {
+    margin: 10px 0;
+  }
+  
+  input[type="number"] {
+    padding: 10px 30px;
+    font-size: 20px;
+    margin: 10px;
+    background-color: rgb(40, 181, 241);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    width: 50px;
+    font-weight: 500;
+  }
+  
+  button {
+    padding: 10px 30px;
+    font-size: 20px;
+    margin: 10px;
+    background-color: #0af;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+  }
+  
+  button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+  }
+  
+  .crash-history-container {
+    margin-top: 30px;
+  }
+  
+  .crash-history {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px;
+    gap: 8px;
+    justify-content: left;
+    flex-wrap: wrap;
+  }
+  
+  .crash-history span {
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .crash-history .low {
+    background-color: skyblue;
+  }
+  
+  .crash-history .mid {
+    background-color: darkblue;
+  }
+  
+  .crash-history .high {
+    background-color: purple;
+  }
+  
+  .crash-history .jackpot {
+    background-color: gold;
+    color: black;
+  }
+
+  .betFlex {
+    display: flex;
+    justify-content: center;
+  }
+  

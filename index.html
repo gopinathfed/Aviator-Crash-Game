@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crash Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Crash Game</h1>
+    <div class="crash-display" id="crashDisplay">Waiting...</div>
+    <div class="x-display">Multiplier: <span id="multiplierDisplay">1.00x</span></div>
+<div class="betFlex">
+    <div class="input-group">
+      <input type="number" id="betAmount" min="1" step="1" placeholder="Enter ₹..." />
+    </div>
+    <div class="input-group">
+      <button id="betButton">Bet</button>
+    </div>
+</div>
+
+    <div class="info">
+      <p id="playerAmount">Your Amount: ₹1000.00</p>
+      <p id="profitLog">Total Profit: ₹0.00</p>
+    </div>
+
+    <div class="crash-history-container">
+      <h3>Crash History</h3>
+      <div id="crashHistory" class="crash-history"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
