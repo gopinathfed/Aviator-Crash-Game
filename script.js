@@ -3,29 +3,40 @@ let crashPoint = 0;
 let gameInterval;
 let hasBet = false;
 let hasCashedOut = false;
-let playerAmount = 1000;
+let playerAmount = parseFloat(localStorage.getItem("playerAmount")) || 1000;
 let betAmount = 0;
-let profit = 0;
 let isGameRunning = false;
-let betStartTime = null;
+let prob = "";
 const input = document.getElementById("betAmount");
 input.value = 100;
 
-function getCrashPointWithProbability() {
+function getCrashPointWithProbability(betActive) {
   const rand = Math.random();
 
-  if (rand < 0.20) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2)); // 20% - 1.00x to 1.05x
-  if (rand < 0.50) return parseFloat((Math.random() * 0.45 + 1.06).toFixed(2));  // 30% - 1.06x to 1.50x
-  if (rand < 0.75) return parseFloat((Math.random() * 0.99 + 1.51).toFixed(2));  // 25% - 1.51x to 2.5x
-  if (rand < 0.90) return parseFloat((Math.random() * 1.49 + 2.51).toFixed(2));  // 15% - 2.51x to 4.0x
-  if (rand < 0.96) return parseFloat((Math.random() * 5 + 4.01).toFixed(2));     // 6% - 4.01x to 9.0x
-  if (rand < 0.99) return parseFloat((Math.random() * 10 + 9.01).toFixed(2));    // 3% - 9.01x to 19.0x
-  return parseFloat((Math.random() * 31 + 19.01).toFixed(2));                    // 1% - 19.01x to 50.0x
+  if (betActive) {
+    prob = "risk";
+    if (rand < 0.30) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));
+    if (rand < 0.65) return parseFloat((Math.random() * 0.44 + 1.06).toFixed(2));
+    if (rand < 0.85) return parseFloat((Math.random() * 0.99 + 1.51).toFixed(2));
+    if (rand < 0.94) return parseFloat((Math.random() * 1.49 + 2.51).toFixed(2));
+    if (rand < 0.98) return parseFloat((Math.random() * 4.99 + 4.01).toFixed(2));
+    return parseFloat((Math.random() * 5 + 9.01).toFixed(2));
+  } else {
+    prob = "no-risk";
+    if (rand < 0.05) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));      // 5% - 1.00x to 1.05x
+    if (rand < 0.15) return parseFloat((Math.random() * 0.44 + 1.06).toFixed(2));       // 10% - 1.06x to 1.50x
+    if (rand < 0.30) return parseFloat((Math.random() * 0.99 + 1.51).toFixed(2));       // 15% - 1.51x to 2.5x
+    if (rand < 0.50) return parseFloat((Math.random() * 1.49 + 2.51).toFixed(2));       // 20% - 2.51x to 4.0x
+    if (rand < 0.70) return parseFloat((Math.random() * 5 + 4.01).toFixed(2));          // 20% - 4.01x to 9.0x
+    if (rand < 0.85) return parseFloat((Math.random() * 5 + 9.01).toFixed(2));          // 15% - 9.01x to 14.0x
+    if (rand < 0.95) return parseFloat((Math.random() * 5 + 14.01).toFixed(2));         // 10% - 14.01x to 19.0x
+    return parseFloat((Math.random() * 5 + 19.01).toFixed(2));                          // 5% - 19.01x to 24.0x
+  }
+
 }
 
 function generateFakeCrashHistory() {
   const history = document.getElementById("crashHistory");
-  const fakeHistory = [];
   const highCrashIndices = new Set();
   while (highCrashIndices.size < 5) {
     highCrashIndices.add(Math.floor(Math.random() * 20));
@@ -33,7 +44,7 @@ function generateFakeCrashHistory() {
   for (let i = 0; i < 20; i++) {
     let value;
     if (highCrashIndices.has(i)) {
-      value = parseFloat((Math.random() * 31 + 19.01).toFixed(2)); // random 20x to 50x
+      value = parseFloat((Math.random() * 31 + 19.01).toFixed(2));
     } else {
       const rand = Math.random();
       if (rand < 0.3) value = parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));
@@ -57,7 +68,7 @@ function generateFakeCrashHistory() {
 function updateUI() {
   document.getElementById("multiplierDisplay").textContent = multiplier.toFixed(2) + "x";
   document.getElementById("playerAmount").textContent = `Your Amount: ₹${playerAmount.toFixed(2)}`;
-  document.getElementById("profitLog").textContent = `Total Profit: ₹${profit.toFixed(2)}`;
+  localStorage.setItem("playerAmount", playerAmount.toFixed(2));
 }
 
 function logCrash(crash) {
@@ -85,14 +96,7 @@ function placeBet() {
   hasCashedOut = false;
   playerAmount -= betAmount;
   updateUI();
-
   document.getElementById("betButton").disabled = true;
-  setTimeout(() => {
-    if (isGameRunning) {
-      document.getElementById("betButton").textContent = "Cash Out";
-      document.getElementById("betButton").disabled = false;
-    }
-  }, 5000);
 }
 
 function handleCashOut() {
@@ -100,13 +104,12 @@ function handleCashOut() {
     hasCashedOut = true;
     const win = betAmount * multiplier;
     playerAmount += win;
-    profit += win - betAmount;
   }
 }
 
 function startGame() {
   multiplier = 1.0;
-  crashPoint = getCrashPointWithProbability();
+  crashPoint = null; // will be generated after 5 seconds
   document.getElementById("crashDisplay").textContent = "Starting...";
   document.getElementById("multiplierDisplay").textContent = "1.00x";
   document.getElementById("betButton").disabled = false;
@@ -116,9 +119,15 @@ function startGame() {
   hasCashedOut = false;
 
   setTimeout(() => {
+    const activeBet = hasBet;
+    crashPoint = getCrashPointWithProbability(activeBet);
     isGameRunning = true;
 
-    if (isGameRunning && hasBet) {
+    console.log("hasBet:", activeBet);
+    console.log("Crash Point:", crashPoint);
+    console.log("Probability:", prob);
+
+    if (activeBet) {
       document.getElementById("betButton").textContent = "Cash Out";
       document.getElementById("betButton").disabled = false;
     }
@@ -126,9 +135,15 @@ function startGame() {
     let currentMultiplier = 1.00;
     let interval;
 
-    const speedBefore2x = 60;
-    const speedAfter2xMin = 20;
-    const speedAfter2xMax = 50;
+    const baseDelay = 60;
+
+    function getSpeed(mult) {
+      if (mult <= 2) return baseDelay;
+      if (mult <= 5) return 30;
+      if (mult <= 10) return 10;
+      if (mult <= 20) return 5;
+      return 1; // faster speed after 5x
+    }
 
     function updateMultiplier() {
       document.getElementById("crashDisplay").textContent = `${currentMultiplier.toFixed(2)}x`;
@@ -141,7 +156,7 @@ function startGame() {
         logCrash(crashPoint);
         isGameRunning = false;
 
-        if (hasBet && !hasCashedOut) {
+        if (activeBet && !hasCashedOut) {
           updateUI();
         }
 
@@ -150,11 +165,7 @@ function startGame() {
       }
 
       currentMultiplier = parseFloat((currentMultiplier + 0.01).toFixed(2));
-
-      const nextDelay = currentMultiplier <= 2
-        ? speedBefore2x
-        : Math.floor(Math.random() * (speedAfter2xMax - speedAfter2xMin + 1)) + speedAfter2xMin;
-
+      const nextDelay = getSpeed(currentMultiplier);
       interval = setTimeout(updateMultiplier, nextDelay);
     }
 
@@ -171,7 +182,7 @@ window.onload = () => {
   betBtn.addEventListener("click", () => {
     if (!isGameRunning && !hasBet) {
       placeBet();
-    } else if (isGameRunning && hasBet && !hasCashedOut) {
+    } else if (isGameRunning && !hasCashedOut && hasBet) {
       handleCashOut();
       betBtn.disabled = true;
     }
