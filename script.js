@@ -104,6 +104,7 @@ function handleCashOut() {
     hasCashedOut = true;
     const win = betAmount * multiplier;
     playerAmount += win;
+    crashPoint += 10;
   }
 }
 
