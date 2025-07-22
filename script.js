@@ -15,6 +15,7 @@ function getCrashPointWithProbability(betActive) {
 
   if (betActive) {
     prob = "risk";
+    const r = Math.random();
     // 3% chance to instantly crash at 1.00x — boosts house profit
     if (r < 0.03) return 1.00;
   
