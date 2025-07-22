@@ -12,16 +12,15 @@ input.value = 100;
 
 function getCrashPointWithProbability(betActive) {
   const rand = Math.random();
-
   if (betActive) {
     prob = "risk";
-    const r = Math.random();
+   
     // 3% chance to instantly crash at 1.00x — boosts house profit
-    if (r < 0.03) return 1.00;
+    if (rand < 0.03) return 1.00;
   
     // Use a power-law style formula to simulate fairness + skew to house
     const fairnessBias = 1.75; // lower = more big multipliers, higher = more small ones
-    const multiplier = Math.pow(1 / (1 - r), 1 / fairnessBias);
+    const multiplier = Math.pow(1 / (1 - rand), 1 / fairnessBias);
   
     return parseFloat(multiplier.toFixed(2));
   } else {
