@@ -15,12 +15,14 @@ function getCrashPointWithProbability(betActive) {
 
   if (betActive) {
     prob = "risk";
-    if (rand < 0.30) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));
-    if (rand < 0.65) return parseFloat((Math.random() * 0.44 + 1.06).toFixed(2));
-    if (rand < 0.85) return parseFloat((Math.random() * 0.99 + 1.51).toFixed(2));
-    if (rand < 0.94) return parseFloat((Math.random() * 1.49 + 2.51).toFixed(2));
-    if (rand < 0.98) return parseFloat((Math.random() * 4.99 + 4.01).toFixed(2));
-    return parseFloat((Math.random() * 5 + 9.01).toFixed(2));
+    // 3% chance to instantly crash at 1.00x — boosts house profit
+    if (r < 0.03) return 1.00;
+  
+    // Use a power-law style formula to simulate fairness + skew to house
+    const fairnessBias = 1.75; // lower = more big multipliers, higher = more small ones
+    const multiplier = Math.pow(1 / (1 - r), 1 / fairnessBias);
+  
+    return parseFloat(multiplier.toFixed(2));
   } else {
     prob = "no-risk";
     if (rand < 0.05) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));      // 5% - 1.00x to 1.05x
@@ -30,7 +32,14 @@ function getCrashPointWithProbability(betActive) {
     if (rand < 0.70) return parseFloat((Math.random() * 5 + 4.01).toFixed(2));          // 20% - 4.01x to 9.0x
     if (rand < 0.85) return parseFloat((Math.random() * 5 + 9.01).toFixed(2));          // 15% - 9.01x to 14.0x
     if (rand < 0.95) return parseFloat((Math.random() * 5 + 14.01).toFixed(2));         // 10% - 14.01x to 19.0x
-    return parseFloat((Math.random() * 5 + 19.01).toFixed(2));                          // 5% - 19.01x to 24.0x
+    if (rand < 0.995) return parseFloat((Math.random() * 5 + 19.01).toFixed(2));        // 4.5% - 19.01x to 24.0x
+  
+    // Rare Wins (0.5%)
+    const bonusRand = Math.random();
+    if (bonusRand < 0.5) return parseFloat((Math.random() * 25 + 75.01).toFixed(2));    // 0.25% - 75.01x to 100x
+    if (bonusRand < 0.8) return parseFloat((Math.random() * 25 + 50.01).toFixed(2));    // 0.15% - 50.01x to 75x
+    if (bonusRand < 0.95) return parseFloat((Math.random() * 25 + 25.01).toFixed(2));   // 0.1% - 25.01x to 50x
+    return parseFloat((Math.random() * 200 + 100.01).toFixed(2));  
   }
 
 }
