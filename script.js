@@ -3,7 +3,7 @@ let crashPoint = 0;
 let gameInterval;
 let hasBet = false;
 let hasCashedOut = false;
-let playerAmount = parseFloat(localStorage.getItem("playerAmount")) || 1000;
+let playerAmount = parseFloat(localStorage.getItem("playerAmount")) || 100000;
 let betAmount = 0;
 let isGameRunning = false;
 let prob = "";
