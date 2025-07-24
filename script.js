@@ -6,14 +6,14 @@ let hasCashedOut = false;
 let playerAmount = parseFloat(localStorage.getItem("playerAmount")) || 100000;
 let betAmount = 0;
 let isGameRunning = false;
-let prob = "";
+//let prob = "";
 const input = document.getElementById("betAmount");
 input.value = 100;
 
 function getCrashPointWithProbability(betActive) {
   const rand = Math.random();
-  if (betActive) {
-    prob = "risk";
+  /*if (betActive) {
+    prob = "risk";*/
    
     // 3% chance to instantly crash at 1.00x — boosts house profit
     if (rand < 0.03) return 1.00;
@@ -23,7 +23,7 @@ function getCrashPointWithProbability(betActive) {
     const multiplier = Math.pow(1 / (1 - rand), 1 / fairnessBias);
   
     return parseFloat(multiplier.toFixed(2));
-  } else {
+ /* } else {
     prob = "no-risk";
     if (rand < 0.05) return parseFloat((Math.random() * 0.049 + 1.00).toFixed(2));      // 5% - 1.00x to 1.05x
     if (rand < 0.15) return parseFloat((Math.random() * 0.44 + 1.06).toFixed(2));       // 10% - 1.06x to 1.50x
@@ -40,7 +40,7 @@ function getCrashPointWithProbability(betActive) {
     if (bonusRand < 0.8) return parseFloat((Math.random() * 25 + 50.01).toFixed(2));    // 0.15% - 50.01x to 75x
     if (bonusRand < 0.95) return parseFloat((Math.random() * 25 + 25.01).toFixed(2));   // 0.1% - 25.01x to 50x
     return parseFloat((Math.random() * 200 + 100.01).toFixed(2));  
-  }
+  }*/
 
 }
 
