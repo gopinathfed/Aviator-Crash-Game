@@ -10,7 +10,7 @@ let isGameRunning = false;
 const input = document.getElementById("betAmount");
 input.value = 100;
 
-function getCrashPointWithProbability(betActive) {
+function getCrashPointWithProbability() {
   const rand = Math.random();
   /*if (betActive) {
     prob = "risk";*/
@@ -129,12 +129,12 @@ function startGame() {
 
   setTimeout(() => {
     const activeBet = hasBet;
-    crashPoint = getCrashPointWithProbability(activeBet);
+    crashPoint = getCrashPointWithProbability();
     isGameRunning = true;
 
-    console.log("hasBet:", activeBet);
+    /*console.log("hasBet:", activeBet);
     console.log("Crash Point:", crashPoint);
-    console.log("Probability:", prob);
+    console.log("Probability:", prob);*/
 
     if (activeBet) {
       document.getElementById("betButton").textContent = "Cash Out";
